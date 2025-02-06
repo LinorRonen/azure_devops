@@ -1,0 +1,11 @@
+bin/
+obj/
+*.pdb
+*.dll
+*.exe
+*.log
+*.nuget.cache
+*.nuget.g.props
+*.nuget.g.targets
+project.assets.json
+
