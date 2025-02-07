@@ -1,8 +1,10 @@
 trigger:
-- main  
+  branches:
+    include:
+      - main
 
 pool:
-  name: Default  
+  name: Default
 
 steps:
 - task: UseDotNet@2
@@ -12,15 +14,13 @@ steps:
     version: '6.x'
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- script: |
-    dotnet build ./MyHelloWorld/MyHelloWorld.csproj --configuration Release
+- script: dotnet build ./MyHelloWorld/MyHelloWorld.csproj --configuration Release
   displayName: 'Build the Project'
 
-- script: dotnet test
+- script: dotnet test ./MyHelloWorld/MyHelloWorld.csproj
   displayName: 'Run Tests'
 
-- script: |
-    dotnet pack ./MyHelloWorld/MyHelloWorld.csproj --configuration Release --output $(Build.ArtifactStagingDirectory)
+- script: dotnet pack ./MyHelloWorld/MyHelloWorld.csproj --configuration Release --output $(Build.ArtifactStagingDirectory)
   displayName: 'Package the Project'
 
 - task: PublishBuildArtifacts@1
