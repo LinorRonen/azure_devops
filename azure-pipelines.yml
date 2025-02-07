@@ -1,23 +1,28 @@
 trigger:
-  - main
+- main  # This runs the pipeline when you push changes to the main branch
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-latest'  # Use a Microsoft-hosted Ubuntu machine
 
 steps:
-  - task: UseDotNet@2
-    inputs:
-      packageType: 'sdk'
-      version: '6.x'
-      installationPath: $(Agent.ToolsDirectory)/dotnet
+- task: UseDotNet@2
+  displayName: 'Install .NET SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 
-  - script: dotnet build --configuration Release
-    displayName: 'Build Project'
+- script: dotnet build --configuration Release
+  displayName: 'Build the project'
 
-  - script: dotnet publish -c Release -o $(Build.ArtifactStagingDirectory)
-    displayName: 'Publish Artifact'
+- script: dotnet test
+  displayName: 'Run tests'
 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: $(Build.ArtifactStagingDirectory)
-      artifactName: 'drop'
+- script: dotnet pack --configuration Release --output $(Build.ArtifactStagingDirectory)
+  displayName: 'Pack the project'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact to Azure DevOps'
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: 'drop'
